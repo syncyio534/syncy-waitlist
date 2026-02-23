@@ -1,11 +1,4 @@
-import React, { useMemo, useState } from 'react';
-
-const CAPACITY = Number(import.meta.env.VITE_WAITLIST_CAPACITY || 2000);
-
-function getProgress(total) {
-  if (!CAPACITY || CAPACITY < 1) return 0;
-  return Math.min(100, Math.max(0, Math.round((total / CAPACITY) * 100)));
-}
+import React, { useEffect, useMemo, useState } from 'react';
 
 export default function App() {
   const [email, setEmail] = useState('');
@@ -14,11 +7,28 @@ export default function App() {
   const [website, setWebsite] = useState('');
   const [status, setStatus] = useState('idle');
   const [message, setMessage] = useState('');
-  const [count, setCount] = useState(Number(import.meta.env.VITE_WAITLIST_BASELINE || 1247));
+  const [count, setCount] = useState(null);
   const startedAt = useMemo(() => Date.now(), []);
 
-  const spotsRemaining = Math.max(CAPACITY - count, 0);
-  const progress = getProgress(count);
+  useEffect(() => {
+    let active = true;
+
+    fetch('/api/waitlist')
+      .then((res) => res.json())
+      .then((data) => {
+        if (!active) return;
+        if (typeof data.waitlistCount === 'number') {
+          setCount(data.waitlistCount);
+        }
+      })
+      .catch(() => {
+        // Keep UI usable even if count endpoint fails.
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   async function submitWaitlist(event) {
     event.preventDefault();
@@ -53,7 +63,11 @@ export default function App() {
       setEmail('');
       setPhone('');
       setConsent(false);
-      setCount(data.waitlistCount || count + 1);
+      if (typeof data.waitlistCount === 'number') {
+        setCount(data.waitlistCount);
+      } else if (typeof count === 'number') {
+        setCount(count + 1);
+      }
     } catch (_err) {
       setStatus('error');
       setMessage('Network error. Please try again in a moment.');
@@ -71,15 +85,15 @@ export default function App() {
         <h1>SYNCY</h1>
         <p className="syncy-tagline">Share music, share moments</p>
 
-        <div className="syncy-meter" role="status" aria-label="Waitlist progress">
+        <div className="syncy-meter" role="status" aria-label="Current waitlist count">
           <p>
-            Join <strong>{count.toLocaleString()}</strong> others on the waitlist
-          </p>
-          <div className="syncy-bar-wrap">
-            <div className="syncy-bar-fill" style={{ width: `${progress}%` }} />
-          </div>
-          <p className="syncy-bar-meta">
-            {progress}% full - {spotsRemaining.toLocaleString()} spots remaining
+            {typeof count === 'number' ? (
+              <>
+                <strong>{count.toLocaleString()}</strong> people currently on the waitlist
+              </>
+            ) : (
+              'Live waitlist count unavailable right now'
+            )}
           </p>
         </div>
 

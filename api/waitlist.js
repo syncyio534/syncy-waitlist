@@ -93,7 +93,7 @@ async function fetchRowCount(projectUrl, serviceRoleKey, tableName) {
 }
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
+  if (req.method !== 'POST' && req.method !== 'GET') {
     return sendJson(res, 405, { error: 'Method not allowed' });
   }
 
@@ -103,6 +103,14 @@ export default async function handler(req, res) {
 
   if (!projectUrl || !serviceRoleKey) {
     return sendJson(res, 500, { error: 'Server not configured' });
+  }
+
+  if (req.method === 'GET') {
+    const waitlistCount = await fetchRowCount(projectUrl, serviceRoleKey, 'waitlist_submissions');
+    if (waitlistCount == null) {
+      return sendJson(res, 500, { error: 'Unable to fetch waitlist count.' });
+    }
+    return sendJson(res, 200, { waitlistCount });
   }
 
   let payload;
@@ -184,9 +192,8 @@ export default async function handler(req, res) {
       return sendJson(res, 500, { error: 'Unable to save your entry right now.' });
     }
 
-    const base = Number(process.env.WAITLIST_BASELINE || 1247);
     const dbCount = await fetchRowCount(projectUrl, serviceRoleKey, 'waitlist_submissions');
-    const waitlistCount = dbCount == null ? undefined : base + dbCount;
+    const waitlistCount = dbCount == null ? undefined : dbCount;
 
     return sendJson(res, 200, { success: true, waitlistCount });
   } catch (_err) {

@@ -4,7 +4,8 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "npx vercel dev --listen 5173",
+    "dev:vite": "vite",
     "build": "vite build",
     "preview": "vite preview",
     "push:owner": "./scripts/push-as-owner.sh",

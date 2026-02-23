@@ -6,6 +6,7 @@ Single-page waitlist built with Vite + React, deployed on Vercel, with secure wr
 
 - One landing page matching your waitlist design
 - `/api/waitlist` serverless endpoint for inserts
+- Live waitlist count from database (no fake baseline)
 - Unique email enforcement (case-insensitive)
 - Anti-spam protections:
   - hidden honeypot field
@@ -23,10 +24,16 @@ npm install
 
 2. Create `.env.local` from `.env.example` and fill values.
 
-3. Start dev server:
+3. Start full-stack local dev (frontend + `/api/waitlist`):
 
 ```bash
 npm run dev
+```
+
+If you only want frontend static preview without API routes, use:
+
+```bash
+npm run dev:vite
 ```
 
 ## Create a new Supabase project
