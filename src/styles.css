@@ -13,15 +13,17 @@ body {
   background: linear-gradient(110deg, #50d0ea 0%, #84c6ed 44%, #f566b6 100%);
 }
 
-.page {
+.syncy-waitlist-page {
   min-height: 100vh;
+  width: 100%;
   display: grid;
   place-items: center;
   padding: 24px;
 }
 
-.card {
+.syncy-waitlist-card {
   width: min(420px, 100%);
+  display: block;
   background: rgba(255, 255, 255, 0.94);
   border-radius: 20px;
   box-shadow: 0 24px 60px rgba(23, 41, 84, 0.24);
@@ -29,14 +31,14 @@ body {
   text-align: center;
 }
 
-.logo {
+.syncy-logo {
   position: relative;
   height: 18px;
   width: 42px;
   margin: 0 auto 12px;
 }
 
-.dot {
+.syncy-dot {
   position: absolute;
   top: 0;
   width: 18px;
@@ -45,12 +47,12 @@ body {
   filter: blur(0.2px);
 }
 
-.dot-a {
+.syncy-dot-a {
   left: 6px;
   background: #6fd3f4;
 }
 
-.dot-b {
+.syncy-dot-b {
   left: 18px;
   background: #df82d5;
   opacity: 0.92;
@@ -62,14 +64,14 @@ h1 {
   font-size: 34px;
 }
 
-.tagline {
+.syncy-tagline {
   margin: 6px 0 16px;
   color: #5f6676;
   font-size: 14px;
   font-weight: 700;
 }
 
-.meter {
+.syncy-meter {
   margin: 0 0 16px;
   background: linear-gradient(160deg, #e7f6fd, #f5e8f3);
   border-radius: 12px;
@@ -77,16 +79,16 @@ h1 {
   text-align: left;
 }
 
-.meter p {
+.syncy-meter p {
   margin: 0;
   font-size: 14px;
 }
 
-.meter strong {
+.syncy-meter strong {
   color: #1d4ed8;
 }
 
-.bar-wrap {
+.syncy-bar-wrap {
   margin: 8px 0 6px;
   width: 100%;
   height: 9px;
@@ -95,19 +97,19 @@ h1 {
   overflow: hidden;
 }
 
-.bar-fill {
+.syncy-bar-fill {
   height: 100%;
   background: linear-gradient(90deg, #39afe0, #4f67f2);
   border-radius: 999px;
   transition: width 220ms ease;
 }
 
-.bar-meta {
+.syncy-bar-meta {
   color: #1e40af;
   font-weight: 700;
 }
 
-.form {
+.syncy-form {
   display: grid;
   gap: 8px;
   text-align: left;
@@ -135,22 +137,22 @@ input[type="tel"]:focus {
   outline: 2px solid #7cbaf4;
 }
 
-.hp {
+.syncy-hp {
   display: none;
 }
 
-.checkbox {
+.syncy-checkbox {
   display: flex;
   align-items: flex-start;
   gap: 8px;
   margin-top: 2px;
 }
 
-.checkbox input {
+.syncy-checkbox input {
   margin-top: 3px;
 }
 
-.checkbox span {
+.syncy-checkbox span {
   font-size: 13px;
   line-height: 1.35;
 }
@@ -176,21 +178,21 @@ button:disabled {
   cursor: wait;
 }
 
-.feedback {
+.syncy-feedback {
   margin: 4px 0 0;
   font-size: 13px;
   font-weight: 700;
 }
 
-.feedback.error {
+.syncy-feedback.error {
   color: #b91c1c;
 }
 
-.feedback.success {
+.syncy-feedback.success {
   color: #0f766e;
 }
 
-.privacy {
+.syncy-privacy {
   margin: 16px 0 0;
   color: #6b7280;
   font-size: 12px;
@@ -203,13 +205,13 @@ button:disabled {
   font-size: 12px;
 }
 
-.turnstile {
+.syncy-turnstile {
   margin: 4px 0 2px;
   min-height: 65px;
 }
 
 @media (max-width: 520px) {
-  .card {
+  .syncy-waitlist-card {
     padding: 24px 16px 18px;
   }
 

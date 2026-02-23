@@ -120,29 +120,29 @@ export default function App() {
   }
 
   return (
-    <main className="page">
-      <section className="card" aria-live="polite">
-        <div className="logo" aria-hidden="true">
-          <span className="dot dot-a" />
-          <span className="dot dot-b" />
+    <main className="syncy-waitlist-page">
+      <section className="syncy-waitlist-card" aria-live="polite">
+        <div className="syncy-logo" aria-hidden="true">
+          <span className="syncy-dot syncy-dot-a" />
+          <span className="syncy-dot syncy-dot-b" />
         </div>
 
         <h1>SYNCY</h1>
-        <p className="tagline">Share music, share moments</p>
+        <p className="syncy-tagline">Share music, share moments</p>
 
-        <div className="meter" role="status" aria-label="Waitlist progress">
+        <div className="syncy-meter" role="status" aria-label="Waitlist progress">
           <p>
             Join <strong>{count.toLocaleString()}</strong> others on the waitlist
           </p>
-          <div className="bar-wrap">
-            <div className="bar-fill" style={{ width: `${progress}%` }} />
+          <div className="syncy-bar-wrap">
+            <div className="syncy-bar-fill" style={{ width: `${progress}%` }} />
           </div>
-          <p className="bar-meta">
+          <p className="syncy-bar-meta">
             {progress}% full - {spotsRemaining.toLocaleString()} spots remaining
           </p>
         </div>
 
-        <form onSubmit={submitWaitlist} className="form">
+        <form onSubmit={submitWaitlist} className="syncy-form">
           <label htmlFor="email">Email</label>
           <input
             id="email"
@@ -165,7 +165,7 @@ export default function App() {
           />
 
           <input
-            className="hp"
+            className="syncy-hp"
             tabIndex={-1}
             autoComplete="off"
             type="text"
@@ -175,9 +175,9 @@ export default function App() {
             onChange={(event) => setWebsite(event.target.value)}
           />
 
-          {TURNSTILE_SITE_KEY ? <div id="turnstile-slot" className="turnstile" /> : null}
+          {TURNSTILE_SITE_KEY ? <div id="turnstile-slot" className="syncy-turnstile" /> : null}
 
-          <label className="checkbox">
+          <label className="syncy-checkbox">
             <input
               type="checkbox"
               checked={consent}
@@ -191,10 +191,10 @@ export default function App() {
             {status === 'loading' ? 'Joining...' : 'Join the Waitlist'}
           </button>
 
-          {message ? <p className={`feedback ${status}`}>{message}</p> : null}
+          {message ? <p className={`syncy-feedback ${status}`}>{message}</p> : null}
         </form>
 
-        <p className="privacy">We respect your privacy. Unsubscribe at any time.</p>
+        <p className="syncy-privacy">We respect your privacy. Unsubscribe at any time.</p>
       </section>
     </main>
   );
