@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 const CAPACITY = Number(import.meta.env.VITE_WAITLIST_CAPACITY || 2000);
 
