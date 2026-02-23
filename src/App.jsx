@@ -1,31 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 
-const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY;
 const CAPACITY = Number(import.meta.env.VITE_WAITLIST_CAPACITY || 2000);
 
 function getProgress(total) {
   if (!CAPACITY || CAPACITY < 1) return 0;
   return Math.min(100, Math.max(0, Math.round((total / CAPACITY) * 100)));
-}
-
-function loadTurnstileScript() {
-  return new Promise((resolve, reject) => {
-    const existing = document.querySelector('script[data-turnstile-script="true"]');
-    if (existing) {
-      if (window.turnstile) resolve();
-      existing.addEventListener('load', () => resolve(), { once: true });
-      return;
-    }
-
-    const script = document.createElement('script');
-    script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
-    script.async = true;
-    script.defer = true;
-    script.dataset.turnstileScript = 'true';
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error('Unable to load Turnstile'));
-    document.head.appendChild(script);
-  });
 }
 
 export default function App() {
@@ -36,46 +15,13 @@ export default function App() {
   const [status, setStatus] = useState('idle');
   const [message, setMessage] = useState('');
   const [count, setCount] = useState(Number(import.meta.env.VITE_WAITLIST_BASELINE || 1247));
-  const [turnstileToken, setTurnstileToken] = useState('');
-  const widgetIdRef = useRef(null);
   const startedAt = useMemo(() => Date.now(), []);
-
-  useEffect(() => {
-    if (!TURNSTILE_SITE_KEY) return;
-
-    let mounted = true;
-
-    loadTurnstileScript()
-      .then(() => {
-        if (!mounted || !window.turnstile || widgetIdRef.current != null) return;
-        widgetIdRef.current = window.turnstile.render('#turnstile-slot', {
-          sitekey: TURNSTILE_SITE_KEY,
-          callback: (token) => setTurnstileToken(token),
-          'expired-callback': () => setTurnstileToken(''),
-          'error-callback': () => setTurnstileToken('')
-        });
-      })
-      .catch(() => {
-        setMessage('Spam protection failed to load. Refresh and try again.');
-        setStatus('error');
-      });
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
 
   const spotsRemaining = Math.max(CAPACITY - count, 0);
   const progress = getProgress(count);
 
   async function submitWaitlist(event) {
     event.preventDefault();
-
-    if (TURNSTILE_SITE_KEY && !turnstileToken) {
-      setStatus('error');
-      setMessage('Please complete the spam check before submitting.');
-      return;
-    }
 
     setStatus('loading');
     setMessage('');
@@ -90,7 +36,7 @@ export default function App() {
           consent,
           website,
           startedAt,
-          turnstileToken
+          turnstileToken: ''
         })
       });
 
@@ -108,11 +54,6 @@ export default function App() {
       setPhone('');
       setConsent(false);
       setCount(data.waitlistCount || count + 1);
-      setTurnstileToken('');
-
-      if (window.turnstile && widgetIdRef.current != null) {
-        window.turnstile.reset(widgetIdRef.current);
-      }
     } catch (_err) {
       setStatus('error');
       setMessage('Network error. Please try again in a moment.');
@@ -174,8 +115,6 @@ export default function App() {
             value={website}
             onChange={(event) => setWebsite(event.target.value)}
           />
-
-          {TURNSTILE_SITE_KEY ? <div id="turnstile-slot" className="syncy-turnstile" /> : null}
 
           <label className="syncy-checkbox">
             <input
