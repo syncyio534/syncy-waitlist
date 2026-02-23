@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "push:owner": "./scripts/push-as-owner.sh",
+    "push:owner:main": "./scripts/push-as-owner.sh main"
   },
   "dependencies": {
     "react": "^18.3.1",

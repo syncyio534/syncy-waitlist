@@ -44,6 +44,19 @@ npm run dev
 3. Deploy.
 4. Add your domain in Vercel and point DNS.
 
+## Owner push and auto redeploy
+
+- Local helper script:
+  - `npm run push:owner:main`
+  - or `./scripts/push-as-owner.sh main "your commit message"`
+- This sets git author to `syncyio534`, commits pending changes, and pushes `main`.
+- GitHub workflow: `.github/workflows/vercel-redeploy.yml`
+  - triggers on push/schedule/manual dispatch
+  - enforces owner commit when non-owner pushes
+  - can call Vercel Deploy Hook
+- Add this repository secret in GitHub:
+  - `VERCEL_DEPLOY_HOOK_WAITLIST`
+
 ## Optional: Turnstile (recommended)
 
 1. Create a Cloudflare Turnstile site.

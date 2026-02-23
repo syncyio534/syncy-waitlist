@@ -1,0 +1,54 @@
+name: Scheduled Vercel Redeploy
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  ensure-owner-commit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    if: github.event_name == 'push' && github.actor != 'syncyio534'
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Create empty owner commit and push
+        run: |
+          git config user.name "syncyio534"
+          git config user.email "syncy.io.534@gmail.com"
+          git commit --allow-empty -m "chore: trigger Vercel deploy"
+          git push
+
+  redeploy:
+    runs-on: ubuntu-latest
+    if: github.event_name != 'push' || github.actor != 'syncyio534'
+    strategy:
+      matrix:
+        include:
+          - name: waitlist
+            secret_env: VERCEL_DEPLOY_HOOK_WAITLIST
+
+    name: Redeploy ${{ matrix.name }}
+    steps:
+      - name: Trigger Vercel deploy
+        env:
+          HOOK_URL: ${{ secrets[matrix.secret_env] }}
+        run: |
+          if [ -z "$HOOK_URL" ]; then
+            echo "::error::Secret ${{ matrix.secret_env }} is not set"
+            exit 1
+          fi
+
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$HOOK_URL")
+
+          if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then
+            echo "$(date -u '+%Y-%m-%d %H:%M:%S UTC') - Triggered Vercel redeploy for ${{ matrix.name }} (HTTP $HTTP_STATUS)"
+          else
+            echo "::error::Deploy hook returned HTTP $HTTP_STATUS"
+            exit 1
+          fi
